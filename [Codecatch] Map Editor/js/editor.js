@@ -33,8 +33,7 @@ function previewFile() {
 
 
 
-
-function addM(POIname, POIinfo) {
+function addM(POIname, POIinfo, POIlogo) {
     
     var name_v1 = "id" + String(i);
     i++;
@@ -43,17 +42,18 @@ function addM(POIname, POIinfo) {
     marker.id = name;
     marker.name = POIname;
     marker.info = POIinfo;
+    marker.logo = POIlogo;
     marker.pixCoordX = map.project(marker.getLatLng(), mapMinZoom).x.toString();
     marker.pixCoordY = map.project(marker.getLatLng(), mapMinZoom).y.toString();
     markerArray.push(marker);
-    marker.addTo(map).bindPopup("Drag me to the right position!").openPopup();
+    marker.addTo(map).bindPopup("<img src=logo/" + marker.logo + " height=20 width=20 /> Drag me to the right position!").openPopup();
 
     marker.on('dragend', function(event) {
     var marker = event.target;  // you could also simply access the marker through the closure
     var result = marker.getLatLng();  // but using the passed event is cleaner
     marker.pixCoordX = map.project(marker.getLatLng()).x.toString();  
     marker.pixCoordY = map.project(marker.getLatLng()).y.toString();  
-    marker.bindPopup(marker.name);    
+    marker.bindPopup("<img src=logo/" + marker.logo + " height=20 width=20 />" + marker.name);    
 
     markerArray[marker.id] = marker;
     });   
@@ -71,13 +71,14 @@ function makeCoordList(){
         textToWrite = textToWrite + '{' + '"name": ' + '"' + String(markerArray[a].name) + '"' +  ', '
                 + '"beschreibung / info": ' + '"' + String(markerArray[a].info) + '"' +  ', '
                 + '"koordinate_x": ' + '"' + String(markerArray[a].pixCoordX) + '"' +  ', ' 
-                + '"koordinate_y": ' + '"' + String(markerArray[a].pixCoordY) + '"' +  '},' + '\n';
+                + '"koordinate_y": ' + '"' + String(markerArray[a].pixCoordY) + '"' +  ', '
+                + '"logo_filename": ' + '"' + markerArray[a].logo + '"' +  '},' + '\n'; 
     }
 
     textToWrite= textToWrite + "]";
 
     var textFileAsBlob = new Blob([textToWrite], {type:'application/JSON'});
-    var fileNameToSaveAs = String('coordinates_name_info');
+    var fileNameToSaveAs = String('coordinates_name_info.json');
 
    var downloadLink = document.createElement("a");
    downloadLink.download = fileNameToSaveAs;
@@ -92,8 +93,8 @@ function makeCoordList(){
    {
         // Firefox requires the link to be added to the DOM
         // before it can be clicked.
+       
       downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-      downloadLink.onclick = destroyClickedElement;
       downloadLink.style.display = "none";
       document.body.appendChild(downloadLink);
    }
