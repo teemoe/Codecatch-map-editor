@@ -8,6 +8,9 @@
         <script src="leaflet-0.7.3/leaflet.js"></script>
         <link rel="stylesheet" href="leaflet-0.7.3/leaflet.css" />
         
+       <!-- jQuery -->
+        <script src="bower_components/jquery/dist/jquery.js"></script> 
+       
        <!-- Bootstrap -->
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
@@ -17,9 +20,6 @@
         <!-- Angular.js -->
         <script src="bower_components/angular/angular.js"></script>
         <script src="js/app.js"></script>
-        
-        <!-- jQuery -->
-        <script src="bower_components/jquery/dist/jquery.js"></script>
         
         <!-- UI-Bootstrap -->
         <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
@@ -36,13 +36,9 @@
          
     </head>
     
-    
-    
     <body>
         
-
-        
-        
+      
         <div ng-controller="ModalController">
         
         <script type="text/ng-template" id="configureMarker.html">
@@ -52,7 +48,14 @@
             </div>
             <div class="modal-body">
                 Name <input class="form-control input-sm" type="text" ng-model="poiname" placeholder="add name here"/> </br>
-                Info <input class="form-control input-sm" type="text" ng-model="poiinfo" placeholder="add info here" /> </br>      
+                Info <input class="form-control input-sm" type="text" ng-model="poiinfo" placeholder="add info here" /> </br>  
+            
+            <span class="btn btn-default btn-file btn-block glyphicon glyphicon-folder-open"> Pick Logo
+                 <input type="file" custom-on-change="uploadFile"/>
+            </span>
+
+           
+                         
             </div>
             <div class="modal-footer">
 
@@ -61,7 +64,31 @@
             </div>
 
         </script>
+
+        <script type="text/ng-template" id="instructions.html">
+            <div class="modal-header">
+                <h3 class="modal-title">How to use?</h3>
+
+            </div>
+            <div class="modal-body">
+                         
+                <p> 1. All you need is one map file and a folder containing your logo-files for each POI</p>
+                <p> 2. Place your logo-folder named 'logo' beside the 'index.html'-file </p>
+                <p> 3. Load your map-file into the editor via the 'Open Map File' button </p>
+                <p> 4. By clicking 'Add Marker' you are able to add POI-markers and define specific information like names, descriptions and the related logo-files</p>
+                <p> 5. Having placed all necessary markers it is possible to download a JSON-file containing all information for [Codecatch]</p>
+                
+                
+            </div>
+            <div class="modal-footer">
+
+                <button class="btn btn-primary" ng-click="okHelp()">Let's go!</button>
             
+            </div>
+
+        </script>    
+    
+    
         <div id="wrapper">
 
             <!-- Sidebar -->
@@ -74,14 +101,16 @@
                         </a>
                     </li>
 
-                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-folder-open"> Open Map File
+                    <span id = "open" class="btn btn-default btn-file btn-block glyphicon glyphicon-folder-open"> Open Map File
                      <input type="file" onchange="previewFile()">
                     </span>
                     
                     <span class="btn btn-default btn-file btn-block glyphicon glyphicon-map-marker" ng-click="configMark()"> Add Marker </span>
                        
                     <span class="btn btn-default btn-file btn-block glyphicon glyphicon-download" onclick="makeCoordList()"> Download Coord-List </span>
-
+ 
+                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-question-sign" ng-click="openHelp()"> Help </span>
+                    
                 </ul>
             </div>
             <!-- /#sidebar-wrapper -->
