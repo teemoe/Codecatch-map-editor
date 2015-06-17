@@ -27,12 +27,16 @@
         
         <!-- Bootstrap-Filestyle -->
         <script src="js/bootstrap-filestyle.js"></script>
+       
+        <!-- ngTagsInput -->
+        <script src="bower_components/ng-tags-input/ng-tags-input.js"></script>
+        <link rel="stylesheet" href="bower_components/ng-tags-input/ng-tags-input.css" />
         
         <!-- etc -->
         <script src="js/editor.js"></script>
         <link rel="stylesheet" href="css/editor.css" /> 
-        
-    
+       
+
          
     </head>
     
@@ -49,6 +53,9 @@
             <div class="modal-body">
                 Name <input class="form-control input-sm" type="text" ng-model="poiname" placeholder="add name here"/> </br>
                 Info <input class="form-control input-sm" type="text" ng-model="poiinfo" placeholder="add info here" /> </br>  
+            <div id = "tags">
+                <tags-input ng-model="tags"></tags-input>
+            </div>
             
             <span class="btn btn-default btn-file btn-block glyphicon glyphicon-folder-open"> Pick Logo
                  <input type="file" custom-on-change="uploadFile"/>
@@ -105,12 +112,16 @@
                      <input type="file" onchange="previewFile()">
                     </span>
                     
-                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-map-marker" ng-click="configMark()"> Add Marker </span>
+                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-map-marker" ng-click="configMark()"> Add POI-Marker </span>
+                    
+                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-map-marker" onclick="configMarkPos()"> Add Position-Marker </span>
                        
                     <span class="btn btn-default btn-file btn-block glyphicon glyphicon-download" onclick="makeCoordList()"> Download Coord-List </span>
+                    
+                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-print" onclick="window.print()">Print</span>
  
                     <span class="btn btn-default btn-file btn-block glyphicon glyphicon-question-sign" ng-click="openHelp()"> Help </span>
-                    
+                                       
                 </ul>
             </div>
             <!-- /#sidebar-wrapper -->
@@ -137,14 +148,16 @@
         <script>
                 
             var i = 1; 
-            var markerArray = new Array();    
+            var countCodes = 1;
+            var markerArray = new Array(); 
+            var markerArrayPos = new Array();
+
 
             var midWidth = 0;
             var midHeight = 0;    
-
-
             var mapMinZoom = 0;
-            var mapMaxZoom = 0;
+            var mapMaxZoom = 4;
+            
             var map = L.map('map', {
               maxZoom: mapMaxZoom,
               minZoom: mapMinZoom,
@@ -152,13 +165,6 @@
               crs: L.CRS.Simple
             }).setView([0, 0], mapMaxZoom);
             
-            var mapBounds = new L.LatLngBounds(
-                map.unproject([0, 1000], mapMaxZoom),
-                map.unproject([1000, 0], mapMaxZoom));
-
-            imageBounds = [map.unproject([0, 1000], mapMaxZoom), map.unproject([1000, 0], mapMaxZoom)];
-
-            map.fitBounds(imageBounds);
                 
         </script>    
         

@@ -1,4 +1,4 @@
-angular.module('Map-Editor', ['ui.bootstrap']);
+angular.module('Map-Editor', ['ui.bootstrap', 'ngTagsInput']);
 angular.module('Map-Editor').controller('ModalController', function ($scope, $modal, $log) {
     
   $scope.animationsEnabled = true;
@@ -11,8 +11,7 @@ angular.module('Map-Editor').controller('ModalController', function ($scope, $mo
       controller: 'ModalInstanceCtrl',
 
     });
-
-      
+        
   };    
     
   $scope.openHelp = function() {
@@ -23,25 +22,25 @@ angular.module('Map-Editor').controller('ModalController', function ($scope, $mo
       controller: 'ModalHelp',
 
     });
-
       
   };       
     
-
-
 });
-
 
 angular.module('Map-Editor').controller('ModalInstanceCtrl', function ($scope, $modalInstance ) {
 
 $scope.poiname = "";
 $scope.poiinfo = ""; 
-$scope.poilogo = "";    
+$scope.poilogo = "";  
+    
+$scope.tags = [
+
+  ];    
+    
  
   $scope.ok = function () {
-    $modalInstance.close(); 
-      
-    addM($scope.poiname, $scope.poiinfo, $scope.poilogo);  
+    $modalInstance.close();       
+    addM($scope.poiname, $scope.poiinfo, $scope.poilogo, $scope.tags);  
 
   };
 
@@ -49,7 +48,7 @@ $scope.poilogo = "";
     $modalInstance.dismiss('cancel');
   };
     
-    $scope.uploadFile = function(){
+    $scope.uploadFile = function(event){
 
         $scope.poilogo = event.target.files[0].name;
     };    

@@ -147,3 +147,6 @@ body{
 
 #map { height: 100%; width: 100%; 
 }
+
+#tags { height: 80px; margin-bottom: 25px;
+}
