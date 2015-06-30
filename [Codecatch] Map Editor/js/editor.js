@@ -53,14 +53,14 @@ function addM(POIname, POIinfo, POIlogo, POItags) {
     var name_v1 = "id" + String(i);
     i++;
     var name = POIname;
-    var marker = new L.marker(map.unproject([midHeight, midWidth], mapMinZoom), {draggable:true});
+    var marker = new L.marker(map.unproject([midHeight, midWidth], mapMaxZoom), {draggable:true});
     marker.id = name;
     marker.name = POIname;
     marker.info = POIinfo;
     marker.logo = POIlogo;
     marker.tags = POItags;
-    marker.pixCoordX = map.project(marker.getLatLng(), mapMinZoom).x.toString();
-    marker.pixCoordY = map.project(marker.getLatLng(), mapMinZoom).y.toString();
+    marker.pixCoordX = map.project(marker.getLatLng(), mapMaxZoom).x.toString();
+    marker.pixCoordY = map.project(marker.getLatLng(), mapMaxZoom).y.toString();
     markerArray.push(marker);
     
     marker.addTo(map).bindPopup("<img src=logo/" + marker.logo + " height=20 width=20 /> Drag me to the right position!").openPopup();
@@ -82,6 +82,17 @@ function addM(POIname, POIinfo, POIlogo, POItags) {
 
 function makeCoordList(){
 
+    // Setze Map-View auf MaxZoom und setze die POI-Koordianten dem Zoomlevel entsprechend neu
+    map.setView([midHeight, midWidth], mapMaxZoom);
+    
+        for( var a = 0; a < markerArray.length; a++){
+                markerArray[a].pixCoordX = map.project(markerArray[a].getLatLng(), mapMaxZoom).x.toString();
+                markerArray[a].pixCoordY = map.project(markerArray[a].getLatLng(), mapMaxZoom).y.toString();
+        }
+    
+    
+    
+    
     var textToWrite='{"poi":' + '\n' + "   [" + '\n';
 
 
@@ -187,7 +198,7 @@ function configMarkPos (){
         countCodes++;
     }
     
-    var marker = new L.marker(map.unproject([midHeight, midWidth], mapMaxZoom), {draggable:true});
+    var marker = new L.marker(map.unproject([midHeight, midWidth], mapMaxZoom), {draggable:true, icon:redMarkerIcon} );
         
     marker.positionCode = code;
     marker.num = currentNum;
