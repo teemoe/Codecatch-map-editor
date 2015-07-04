@@ -29,8 +29,6 @@ function previewFile() {
             var latlngCenter = map.unproject(pointCenter, mapMaxZoom);	
             map.setView(latlngCenter, mapMinZoom);
 
-
-
             mapBounds = new L.LatLngBounds(
                 map.unproject(pointSouthWest, mapMaxZoom),
                 map.unproject(pointNorthEast, mapMaxZoom));
@@ -220,5 +218,26 @@ function configMarkPos (){
 
     markerArrayPos[marker.num] = marker;
     });  
+    
+};
+
+
+
+function printdiv(printpage) {
+    
+    for( var b = 0; b < markerArrayPos.length; b++){
+    
+        markerArrayPos[b].openPopup();
+    
+    }
+    
+    var headstr = "<html><head><title></title></head><body>";
+    var footstr = "</body>";
+    var newstr = document.all.item(printpage).innerHTML;
+    var oldstr = document.body.innerHTML;
+    document.body.innerHTML = headstr+newstr+footstr;
+    window.print();
+    document.body.innerHTML = oldstr;
+    return false;
     
 };

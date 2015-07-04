@@ -3,15 +3,16 @@
    <head>
        
         <title>[Codecatch] Map Editor</title>
+        <link rel="icon"  href="marker_red.png">
        
         <!-- Leaflet -->
         <script src="leaflet-0.7.3/leaflet.js"></script>
         <link rel="stylesheet" href="leaflet-0.7.3/leaflet.css" />
         
-       <!-- jQuery -->
+        <!-- jQuery -->
         <script src="bower_components/jquery/dist/jquery.js"></script> 
        
-       <!-- Bootstrap -->
+        <!-- Bootstrap -->
         <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
         <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css" />
@@ -117,11 +118,11 @@
                     <span class="btn btn-default btn-file btn-block glyphicon glyphicon-map-marker" onclick="configMarkPos()"> Add Position-Marker </span>
                        
                     <span class="btn btn-default btn-file btn-block glyphicon glyphicon-download" onclick="makeCoordList()"> Download Coord-List </span>
-                    
-                    <!-- <span class="btn btn-default btn-file btn-block glyphicon glyphicon-print" onclick="window.print()">Print</span> -->
  
-                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-question-sign" ng-click="openHelp()"> Help </span>
-                                       
+                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon-question-sign" ng-click="openHelp()"> Help </span>     
+                    
+                    <span class="btn btn-default btn-file btn-block glyphicon glyphicon glyphicon-print" onclick="printdiv('page-content-wrapper');"> Print </span>
+                    
                 </ul>
             </div>
             <!-- /#sidebar-wrapper -->
@@ -158,13 +159,24 @@
             var mapMinZoom = 0;
             var mapMaxZoom = 4;
             
+            L.Map = L.Map.extend({
+                openPopup: function(popup) {
+                    //        this.closePopup();  // just comment this
+                    this._popup = popup;
+
+                    return this.addLayer(popup).fire('popupopen', {
+                        popup: this._popup
+                    });
+                }
+            }); 
+            
+            
             var map = L.map('map', {
               maxZoom: mapMaxZoom,
               minZoom: mapMinZoom,
                 
               crs: L.CRS.Simple
             }).setView([0, 0], mapMaxZoom);
-            
                 
         </script>    
         
