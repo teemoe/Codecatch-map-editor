@@ -1,3 +1,5 @@
+// Load the map file into the editor by this function
+
 function previewFile() {
     
     var img     = document.createElement("img");
@@ -16,6 +18,8 @@ function previewFile() {
             midWidth = this.width /2;   
 
 
+            //optionally the zoom-levels can be adjusted by the image size
+            
             //var mapMinZoom = (this.width/window.innerWidth)/2 + 1;
             //var mapMaxZoom = this.width/window.innerWidth + 1;    
             var mapMinZoom = 0;
@@ -44,9 +48,12 @@ function previewFile() {
 }  
 
 
+// Use this function to add POI-Markers, the arguments of this function will be typed in to the angular.js-modal
 
 function addM(POIname, POIinfo, POIlogo, POItags) {
         
+    //Definition of marker
+    
     var name_v1 = "id" + String(i);
     i++;
     var name = POIname;
@@ -60,10 +67,16 @@ function addM(POIname, POIinfo, POIlogo, POItags) {
     marker.pixCoordY = map.project(marker.getLatLng(), mapMaxZoom).y.toString();
     markerArray.push(marker);
     
+    //Adding marker to map
+    
     marker.addTo(map).bindPopup("<img src=logo/" + marker.logo + " height=20 width=20 /> Drag me to the right position!").openPopup();
+    
+    //Set view to the right position in order to have the marker in your field of view
     
     map.setView(new L.LatLng(marker.getLatLng().lat, marker.getLatLng().lng), mapMinZoom);
 
+    // Define the 'dragend'-event in order to write the new coordinates of the marker into the array
+    
     marker.on('dragend', function(event) {
     var marker = event.target;  
     var result = marker.getLatLng();  
@@ -77,10 +90,11 @@ function addM(POIname, POIinfo, POIlogo, POItags) {
 };
 
 
+//Use this function to download the JSON-file containing the information of POI- and position-markers
+
 function makeCoordList(){
 
-    // Setze Map-View auf MaxZoom und setze die POI-Koordianten dem Zoomlevel entsprechend neu
-    //map.setView([0, 0], mapMaxZoom);
+        // Get all current coordinates of both the POI- and Position-markers at the maximum zoom level to guarantee a correct integration into the Codecatch-App
     
         for( var a = 0; a < markerArray.length; a++){
                 markerArray[a].pixCoordX = map.project(markerArray[a].getLatLng(), mapMaxZoom).x.toString();
@@ -94,10 +108,11 @@ function makeCoordList(){
     
     
     
-    
+    // Start of the JSON-file content
     var textToWrite='{"poi":' + '\n' + "   [" + '\n';
 
 
+    // Get all the necessary marker information and write them into a form compatible with JSON syntax
     for( var a = 0; a < markerArray.length-1; a++){
 
         var tags = '';
@@ -110,8 +125,7 @@ function makeCoordList(){
                     tags = tags + '"' + markerArray[a].tags[i].text + '"';
                 }
         
-        
-        
+
         
         textToWrite = textToWrite + '   {' + '"name": ' + '"' + String(markerArray[a].name) + '"' +  ', '
                 + '"beschreibung": ' + '"' + String(markerArray[a].info) + '"' +  ', '
@@ -121,16 +135,38 @@ function makeCoordList(){
                 + '"logoName": ' + '"' + markerArray[a].logo + '"' +  '},' + '\n'; 
     }
     
+    
+    // This section is supposed for the last array element only
+    if(markerArray.length > 0){
+        
+        var tagsOfLastMarker = '';
+        
+        
+            for(var i = 0; i < markerArray[markerArray.length - 1].tags.length; i++){
+    
+                if(i < markerArray[markerArray.length - 1].tags.length-1)    
+              
+                    
+                    tagsOfLastMarker = tagsOfLastMarker + '"' + markerArray[markerArray.length - 1].tags[i].text + '", '; 
+                else
+                    tagsOfLastMarker = tagsOfLastMarker + '"' + markerArray[markerArray.length - 1].tags[i].text + '"';
+                }
+    
+    
         textToWrite = textToWrite + '   {' + '"name": ' + '"' + String(markerArray[markerArray.length-1].name) +'"'+', '
             + '"beschreibung": ' + '"' + String(markerArray[markerArray.length-1].info) + '"' +  ', '
-            + '"tags": ' + '[' + tags + ']' +  ', '
+            + '"tags": ' + '[' + tagsOfLastMarker + ']' +  ', '
             + '"x": ' + '"' + String(markerArray[markerArray.length-1].pixCoordX) + '"' +  ', ' 
             + '"y": ' + '"' + String(markerArray[markerArray.length-1].pixCoordY) + '"' +  ', '
             + '"logoName": ' + '"' + markerArray[markerArray.length-1].logo + '"' +  '}' + '\n'; 
-    
+    }
 
     textToWrite= textToWrite + "   ]," + '\n' + '\n' + '"position":' + '\n' + "   [" + '\n';
     
+    
+    if(markerArrayPos.length > 0){
+    
+    // Write all information about the Position-marker into the text
     for( var b = 0; b < markerArrayPos.length - 1 ; b++){
         
         textToWrite = textToWrite + '   {' + '"posCode": ' + '"' + String(markerArrayPos[b].positionCode) + '"' +  ', '
@@ -144,8 +180,13 @@ function makeCoordList(){
              + '"x": ' + '"' + String(markerArrayPos[markerArrayPos.length - 1].pixCoordX) + '"' +  ', ' 
              + '"y": ' + '"' + String(markerArrayPos[markerArrayPos.length - 1].pixCoordY) + '"' +  ','
              + '"text": "You Are Here!"' + '}' + '\n'; 
+    }
     
-    textToWrite= textToWrite + "   ]" + '\n' +'}'
+    textToWrite= textToWrite + "   ]" + '\n' +'}';
+    
+    
+    
+    // Writing the text into a 'Blob' and preparing it for the download
 
     var textFileAsBlob = new Blob([textToWrite], {type:'application/JSON'});
     var fileNameToSaveAs = String('jsonData.json');
@@ -175,7 +216,7 @@ function makeCoordList(){
 
 };
 
-
+// This function will be used to add Position-markers to the map
 function configMarkPos (){
     
     var redMarkerIcon = new L.icon({
@@ -184,14 +225,16 @@ function configMarkPos (){
         //currently no shadow included
         
         iconSize:     [65, 65], // size of the icon
-        //shadowSize:   [50, 64], // size of the shadow
+        //shadowSize:   [50, 64], // size of the shadow, not included
         iconAnchor:   [32, 65], // point of the icon which will correspond to marker's location
-        //shadowAnchor: [4, 62],  // the same for the shadow
+        //shadowAnchor: [4, 62],  // the same for the shadow, not included
         popupAnchor:  [1, -49] // point from which the popup should open relative to the iconAnchor
     });
     
     var code;
     var currentNum = countCodes - 1;
+    
+    // This section adds the code to the Position-marker, assuming that there will be not more than 9999 markers on the map
     
     if(countCodes < 10){
 
@@ -217,6 +260,7 @@ function configMarkPos (){
         countCodes++;
     }
     
+    // Finally marker will be added to the map
     var marker = new L.marker(map.unproject([midHeight, midWidth], mapMaxZoom), {draggable:true, icon:redMarkerIcon} );
         
     marker.positionCode = code;
@@ -230,6 +274,8 @@ function configMarkPos (){
     
     map.setView(new L.LatLng(marker.getLatLng().lat, marker.getLatLng().lng), mapMinZoom);
     
+    
+    // Definition of 'dragend'-event
     marker.on('dragend', function(event) {
     var marker = event.target;  
     var result = marker.getLatLng(); 
@@ -243,19 +289,22 @@ function configMarkPos (){
 };
 
 
-
+// This function is used to invoke the browser's print function, more configs have to be done to the print options in order to get the full map on the page
+// the idea is to get a pdf-file giving information about the location where to place the code signs
 function printdiv(printpage) {
-    
-    
-    
     
     for( var b = 0; b < markerArrayPos.length; b++){
     
         markerArrayPos[b].openPopup();
-    
     }
     
     //map.setView([midHeight, midWidth], mapMinZoom);
+    
+    
+    // The section containing the map and the markers will be set to the entire html page,
+    // by saving the old status it is possible to reset the old design, nonetheless the map will not be editable anymore
+    // Only use this function when you are sure that no more changes have to be done to the map
+    
     
     var headstr = "<html><head><title></title></head><body>";
     var footstr = "</body>";

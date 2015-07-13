@@ -1,4 +1,8 @@
 angular.module('Map-Editor', ['ui.bootstrap', 'ngTagsInput']);
+
+
+//This controller is defined to open up the modals of the POI defintion and help instructions
+
 angular.module('Map-Editor').controller('ModalController', function ($scope, $modal, $log) {
     
   $scope.animationsEnabled = true;
@@ -27,6 +31,8 @@ angular.module('Map-Editor').controller('ModalController', function ($scope, $mo
     
 });
 
+
+// This controller receives the entries of the POI information and invokes the function used to add POI-markers to the map
 angular.module('Map-Editor').controller('ModalInstanceCtrl', function ($scope, $modalInstance ) {
 
 $scope.poiname = "";
@@ -55,6 +61,7 @@ $scope.tags = [
 });
 
 
+// This controller handles the modal of the helping instructions
 angular.module('Map-Editor').controller('ModalHelp', function ($scope, $modalInstance ) {
 
 
@@ -63,17 +70,4 @@ angular.module('Map-Editor').controller('ModalHelp', function ($scope, $modalIns
   };
 
 
-});
-
-
-
-
-angular.module('Map-Editor').directive('customOnChange', function() {
-  return {
-    restrict: 'A',
-    link: function (scope, element, attrs) {
-      var onChangeFunc = scope.$eval(attrs.customOnChange);
-      element.bind('change', onChangeFunc);
-    }
-  };
 });
